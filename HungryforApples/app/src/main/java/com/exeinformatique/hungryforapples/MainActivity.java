@@ -1,5 +1,6 @@
 package com.exeinformatique.hungryforapples;
 
+<<<<<<< master
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +14,12 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import java.util.HashMap;
 import java.util.Map;
+=======
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+>>>>>>> Intégration de Google Maps dans une activity
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "DatabaseActivity";
@@ -23,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+<<<<<<< master
         db = FirebaseFirestore.getInstance();
 
         getAllRestaurantsPosition();
@@ -80,5 +88,22 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return position;
+=======
+        setListeners();
+    }
+
+    public void setListeners(){
+        findViewById(R.id.btn_gotoViewRestaurants).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gotoViewRestaurants();
+            }
+        });
+    }
+
+    private void gotoViewRestaurants(){
+        Intent gotoViewRestaurant = new Intent(this, ViewRestaurantsActivity.class);
+        startActivity(gotoViewRestaurant);
+>>>>>>> Intégration de Google Maps dans une activity
     }
 }

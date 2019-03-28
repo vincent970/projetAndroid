@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Hungry for Apples</string>
+    <string name="title_activity_view_restaurants">Map</string>
 </resources>
