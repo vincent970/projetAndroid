@@ -1,7 +1,11 @@
 package com.exeinformatique.hungryforapples;
 
-import android.support.v4.app.FragmentActivity;
+import android.content.Context;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -13,7 +17,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class ViewRestaurantsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-
+    LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,7 +27,6 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
     }
-
 
     /**
      * Manipulates the map once available.
@@ -43,4 +46,35 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
         mMap.addMarker(new MarkerOptions().position(sydney).title("REEEEEEEEEEEEEE"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
+
+    LocationListener locationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+
+        }
+
+        @Override
+        public void onStatusChanged(String s, int i, Bundle bundle) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String s) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String s) {
+
+        }
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,0,0,locationListener);
+    };
+
+    private void SetWaypointUser(){
+        LatLng sydney = new LatLng(51.8900, 1.4762);
+        mMap.addMarker(new MarkerOptions().position(sydney).title("REEEEEEEEEEEEEE"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    }
+
+
 }
