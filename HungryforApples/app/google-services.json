@@ -1,0 +1,44 @@
+{
+  "project_info": {
+    "project_number": "285913237109",
+    "firebase_url": "https://hungryforapples-93b49.firebaseio.com",
+    "project_id": "hungryforapples-93b49",
+    "storage_bucket": "hungryforapples-93b49.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:285913237109:android:066184fc8ff69ad5",
+        "android_client_info": {
+          "package_name": "com.exeinformatique.hungryforapples"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "285913237109-tb05pl75nc3goim8u2a2rbafr2fp0f1a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.exeinformatique.hungryforapples",
+            "certificate_hash": "1ef7de456d3e24367b83c2ffa1058bb494c71e6c"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAq9_1Vhu2naSXYk727MGrczCSWq6vgmfU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "285913237109-7pp9gbucv9bo71b6mjmvv2s7l14ua004.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
