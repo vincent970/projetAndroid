@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return position;
-=======
+
         setListeners();
     }
 
@@ -104,6 +104,6 @@ public class MainActivity extends AppCompatActivity {
     private void gotoViewRestaurants(){
         Intent gotoViewRestaurant = new Intent(this, ViewRestaurantsActivity.class);
         startActivity(gotoViewRestaurant);
->>>>>>> Intégration de Google Maps dans une activity
+
     }
 }
