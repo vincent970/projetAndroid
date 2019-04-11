@@ -2,6 +2,8 @@ package com.exeinformatique.hungryforapples;
 
 import android.Manifest;
 import android.content.Context;
+
+import com.google.android.gms.location.FusedLocationProviderApi;
 import com.google.android.gms.location.LocationServices;
 
 import android.content.pm.PackageManager;
@@ -15,7 +17,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
-import android.widget.Toast;
+
+
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -26,49 +29,63 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 
 import java.security.Permission;
 
 
 public class ViewRestaurantsActivity extends FragmentActivity
-        implements OnMapReadyCallback,
-        GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener{
+        implements OnMapReadyCallback{
     private GoogleMap mMap;
 
     private GoogleApiClient mGoogleApiClient;
-    public static final String TAG = ViewRestaurantsActivity.class.getSimpleName();
-
+    //public static final String TAG = ViewRestaurantsActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        super.onCreate(savedInstanceState);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.ACCESS_FINE_LOCATION }, 0);
         }
-        //Toast.makeText(this,"got here",Toast.LENGTH_LONG).show();
-        super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_view_restaurants);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync( this);
-        //Toast.makeText(this,"", Toast.LENGTH_LONG).show();
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-//                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
 
-       LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-       locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,0,0,locationListener);
+        /*mGoogleApiClient = new GoogleApiClient.Builder(this)
+                //.addConnectionCallbacks(this)
+                //.addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();*/
+        //Toast.makeText(this,"", Toast.LENGTH_LONG).show();
+
+
+      LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+      locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,0,0,locationListener);
     }
 
-    @Override
+    LocationListener locationListener = new LocationListener() {
+        public void onLocationChanged(Location location) {
+            // Called when a new location is found by the network location provider.
+            putMarkerOnMap(location, "");
+        }
+
+        public void onStatusChanged(String provider, int status, Bundle extras) {}
+
+        public void onProviderEnabled(String provider) {}
+
+        public void onProviderDisabled(String provider) {}
+    };
+
+   /* @Override
     protected void onStart() {
         super.onStart();
+
         if (mGoogleApiClient != null) {
             mGoogleApiClient.connect();
         }
@@ -77,14 +94,14 @@ public class ViewRestaurantsActivity extends FragmentActivity
 
     @Override
     protected void onStop() {
-        mGoogleApiClient.disconnect();
+      // mGoogleApiClient.disconnect();
         super.onStop();
     }
 
     @Override
     protected void onResume(){
         super.onResume();
-        mGoogleApiClient.connect();
+       // mGoogleApiClient.connect();
     }
 
     @Override
@@ -93,7 +110,7 @@ public class ViewRestaurantsActivity extends FragmentActivity
         if (mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
         }
-    }
+    }*/
 
     /**
      * Manipulates the map once available.
@@ -109,30 +126,17 @@ public class ViewRestaurantsActivity extends FragmentActivity
 
         // Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(51.8900, 1.4762);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("REEEEEEEEEEEEEE"));
+        mMap.addMarker(new MarkerOptions().position(sydney).title("here"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 
     // Acquire a reference to the system Location Manager
 
     // Define a listener that responds to location updates
-   LocationListener locationListener = new LocationListener() {
-        public void onLocationChanged(Location location) {
-            // Called when a new location is found by the network location provider.
-            putMarkerOnMap(location, "");
-        }
 
-        public void onStatusChanged(String provider, int status, Bundle extras) {}
-
-        public void onProviderEnabled(String provider) {}
-
-        public void onProviderDisabled(String provider) {}
-    };
 
 // Register the listener with the Location Manager to receive location updates
-
-
-
+    
     private void putMarkerOnMap(Location location, String Tag ){
         LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
         mMap.addMarker(new MarkerOptions().position(userLocation).title(Tag));
@@ -159,7 +163,6 @@ public class ViewRestaurantsActivity extends FragmentActivity
     }
 
 
-    @Override
     public void onConnected(@Nullable Bundle bundle) {
         Location location = null;
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -180,12 +183,12 @@ public class ViewRestaurantsActivity extends FragmentActivity
         SetWaypointUser(location);
     }
 
-    @Override
+
     public void onConnectionSuspended(int i) {
 
     }
 
-    @Override
+
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
