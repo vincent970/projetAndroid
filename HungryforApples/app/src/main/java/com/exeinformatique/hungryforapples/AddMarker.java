@@ -10,14 +10,23 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+
 public class AddMarker {
 
-    @Override
+    private List<Marker> restaurant_marker;
+
+    //@Override
     public void onMapReady(GoogleMap map) {
         map.addMarker(new MarkerOptions()
                 .position(new LatLng(10, 10))
                 .title("Hello world"));
     }
+}
 
     public class MarkerDemoActivity extends FragmentActivity implements
             GoogleMap.OnMarkerClickListener,
@@ -41,17 +50,22 @@ public class AddMarker {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.marker_restaurant);
 
+            restaurant_marker = new ArrayList<>();
+
+    }
             SupportMapFragment mapFragment =
                     (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
             mapFragment.getMapAsync(this);
         }
 
         /** Called when the map is ready. */
-        @Override
+       /* @Override
         public void onMapReady(GoogleMap map) {
             mMap = map;
 
-            mPointVirgule = mMap.addMarker(new MarkerOptions()
+
+
+            mMap.addMarker(new MarkerOptions()
                     .position(PointVirgule)
                     .title("PointVirgule"));
             mPointVirgule.setTag(0);
@@ -73,6 +87,16 @@ public class AddMarker {
 
             // Set a listener for marker click.
             mMap.setOnMarkerClickListener(this);
+        }
+*/
+        public void createMarker(GoogleMap map, String name, Double lat, Double lng)
+        {
+           Marker marker = map.addMarker(new MarkerOptions()
+                    .position(new LatLng(lat,lng))
+                    .title(name)
+            );
+            restaurant_marker.add(marker);
+            map.setOnMarkerClickListener();
         }
 
         /** Called when the user clicks a marker. */
