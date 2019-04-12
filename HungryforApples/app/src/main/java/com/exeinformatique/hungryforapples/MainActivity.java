@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         db = FirebaseFirestore.getInstance();
-
+        setListeners();
         getAllRestaurantsPosition();
     }
 
@@ -88,8 +88,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return position;
-
-        setListeners();
     }
 
     public void setListeners(){
