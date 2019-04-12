@@ -1,5 +1,6 @@
 package com.exeinformatique.hungryforapples;
 
+
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,6 +15,12 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.HashMap;
 import java.util.Map;
 
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+
+
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "DatabaseActivity";
     private Map<String, Map<String,Double>> restaurantsPosition;
@@ -23,8 +30,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        db = FirebaseFirestore.getInstance();
 
+        db = FirebaseFirestore.getInstance();
+        setListeners();
         getAllRestaurantsPosition();
     }
 
@@ -80,5 +88,20 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return position;
+    }
+
+    public void setListeners(){
+        findViewById(R.id.btn_gotoViewRestaurants).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gotoViewRestaurants();
+            }
+        });
+    }
+
+    private void gotoViewRestaurants(){
+        Intent gotoViewRestaurant = new Intent(this, ViewRestaurantsActivity.class);
+        startActivity(gotoViewRestaurant);
+
     }
 }
