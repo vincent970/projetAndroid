@@ -100,8 +100,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void gotoViewRestaurants(){
-        Intent gotoViewRestaurant = new Intent(this, ViewRestaurantsActivity.class);
-        startActivity(gotoViewRestaurant);
-
+        startActivity(new Intent(this, ViewRestaurantsActivity.class));
     }
 }
