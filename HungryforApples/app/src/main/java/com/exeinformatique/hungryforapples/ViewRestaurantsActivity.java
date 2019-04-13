@@ -2,43 +2,43 @@ package com.exeinformatique.hungryforapples;
 
 import android.Manifest;
 import android.content.Context;
-
-import com.google.android.gms.location.FusedLocationProviderApi;
-import com.google.android.gms.location.LocationServices;
-
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
-
-
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
 
-import java.security.Permission;
+import java.util.List;
 
 
 public class ViewRestaurantsActivity extends FragmentActivity
         implements OnMapReadyCallback{
     private GoogleMap mMap;
 
-    MarkerOptions currentLocationMarker = new MarkerOptions();
+    Marker currentLocationMarker;
+    List<Marker> restaurant_marker;
+
+    private  final LatLng PointVirgule = new LatLng(46.122208, -70.670354);
+    private  final LatLng ChezGerard = new LatLng(46.099645, -70.653726);
+    private  final LatLng PoutineDor = new LatLng(46.119221, -70.683651);
+    private  final LatLng TableJunior = new LatLng(46.125399, -70.684117);
+
+    private Marker mPointVirgule;
+    private Marker mChezGerard;
+    private Marker mPoutineDor;
+    private Marker mTableJunior;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,15 +77,15 @@ public class ViewRestaurantsActivity extends FragmentActivity
 
         // Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(51.8900, 1.4762);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("here"));
+        MarkerOptions currentLocation = new MarkerOptions().position(sydney);
+        currentLocationMarker = mMap.addMarker(currentLocation);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
     }
 
     private void updateUserLocationOnMap(Location location ){
         LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
-        currentLocationMarker.position(userLocation);
-        mMap.clear();
-        mMap.addMarker(currentLocationMarker);
+        currentLocationMarker.setPosition(userLocation);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation,13));
     }
 
