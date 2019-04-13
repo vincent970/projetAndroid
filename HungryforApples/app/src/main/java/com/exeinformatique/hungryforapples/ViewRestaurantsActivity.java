@@ -7,6 +7,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
@@ -31,16 +32,14 @@ import java.util.List;
 import java.util.Map;
 
 
-public class ViewRestaurantsActivity extends FragmentActivity
-        implements OnMapReadyCallback{
-    private GoogleMap mMap;
-
-    Marker currentLocationMarker;
+public class ViewRestaurantsActivity extends FragmentActivity implements OnMapReadyCallback {
     private static final String TAG = "DatabaseActivity";
-    private Map<String, Map<String,Double>> restaurantsPosition;
-    private List<Marker> restaurantMarkers;
     FirebaseFirestore db = null;
-    MarkerOptions currentLocationMarker = new MarkerOptions();
+
+    private GoogleMap mMap;
+    private Marker currentLocationMarker;
+    private List<Marker> restaurantMarkers;
+    private Map<String, Map<String,Double>> restaurantsPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +48,9 @@ public class ViewRestaurantsActivity extends FragmentActivity
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.ACCESS_FINE_LOCATION }, 0);
+            ActivityCompat.requestPermissions(this, new String[] {
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                }, 0);
         }
 
         setContentView(R.layout.activity_view_restaurants);
@@ -58,8 +59,14 @@ public class ViewRestaurantsActivity extends FragmentActivity
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync( this);
 
-      LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-      locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,0,0,locationListener);
+      LocationManager locationManager = (LocationManager)
+              this.getSystemService(Context.LOCATION_SERVICE);
+      locationManager.requestLocationUpdates(
+              LocationManager.NETWORK_PROVIDER,
+              0,
+              0,
+              locationListener
+      );
     }
 
     LocationListener locationListener = new LocationListener() {
@@ -76,19 +83,17 @@ public class ViewRestaurantsActivity extends FragmentActivity
 
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(51.8900, 1.4762);
-        MarkerOptions currentLocation = new MarkerOptions().position(sydney);
-        currentLocationMarker = mMap.addMarker(currentLocation);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-
+        getAllRestaurantsPosition();
     }
 
     private void updateUserLocationOnMap(Location location ){
         LatLng userLocation = new LatLng(location.getLatitude(), location.getLongitude());
-        currentLocationMarker.setPosition(userLocation);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation,13));
+        if (currentLocationMarker == null) {
+            currentLocationMarker = mMap.addMarker(new MarkerOptions().position(userLocation));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation,13));
+        } else {
+            currentLocationMarker.setPosition(userLocation);
+        }
     }
 
     private void getAllRestaurantsPosition() {
@@ -129,10 +134,9 @@ public class ViewRestaurantsActivity extends FragmentActivity
             if (lat != null && lng != null) {
                 String message = restaurantName + ": " + lat + ',' + lng;
                 Log.d(TAG, "showing Toast with message: " + message);
-                restaurantMarkers.add(mMap.addMarker(
-                        new MarkerOptions()
-                                .position(new LatLng(lat, lng))
-                                .title(restaurantName)));
+                restaurantMarkers.add(mMap.addMarker(new MarkerOptions()
+                                                        .position(new LatLng(lat, lng))
+                                                        .title(restaurantName)));
             }
         }
     }
