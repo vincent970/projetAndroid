@@ -21,11 +21,23 @@
             "package_name": "com.exeinformatique.hungryforapples",
             "certificate_hash": "1ef7de456d3e24367b83c2ffa1058bb494c71e6c"
           }
+        },
+        {
+          "client_id": "285913237109-gp402ofoevp3ri7epn0gaten3s4qn8es.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.exeinformatique.hungryforapples",
+            "certificate_hash": "ca22f4bdc127c4405469491284fcfd2b20a37a20"
+          }
+        },
+        {
+          "client_id": "285913237109-7pp9gbucv9bo71b6mjmvv2s7l14ua004.apps.googleusercontent.com",
+          "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAq9_1Vhu2naSXYk727MGrczCSWq6vgmfU"
+          "current_key": "AIzaSyDOLxMf9vFUIgn8EHB4pVZgtY4oJvNUObY"
         }
       ],
       "services": {
