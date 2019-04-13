@@ -19,26 +19,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.List;
-
-
 public class ViewRestaurantsActivity extends FragmentActivity
         implements OnMapReadyCallback{
     private GoogleMap mMap;
 
     Marker currentLocationMarker;
-    List<Marker> restaurant_marker;
-
-    private  final LatLng PointVirgule = new LatLng(46.122208, -70.670354);
-    private  final LatLng ChezGerard = new LatLng(46.099645, -70.653726);
-    private  final LatLng PoutineDor = new LatLng(46.119221, -70.683651);
-    private  final LatLng TableJunior = new LatLng(46.125399, -70.684117);
-
-    private Marker mPointVirgule;
-    private Marker mChezGerard;
-    private Marker mPoutineDor;
-    private Marker mTableJunior;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
