@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setListeners();
-        AskForCoarseLoactionPermission();
+        AskForCoarseLocationPermission();
     }
 
     public void setListeners(){
@@ -41,17 +41,16 @@ public class MainActivity extends AppCompatActivity {
                 == PackageManager.PERMISSION_GRANTED) {
             return true;
         }else{
-            AskForCoarseLoactionPermission();
+            AskForCoarseLocationPermission();
             return  false;
         }
 
     }
 
-    private void AskForCoarseLoactionPermission(){
+    private void AskForCoarseLocationPermission(){
             ActivityCompat.requestPermissions(this, new String[] {
-                    Manifest.permission.ACCESS_FINE_LOCATION
+                    Manifest.permission.ACCESS_COARSE_LOCATION
             }, 0);
-        //Toast.makeText(this, "Carl you motherfucking piece of shit gangbanging cocksucka", Toast.LENGTH_LONG).show();
     }
 
 }
