@@ -45,28 +45,26 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         db = FirebaseFirestore.getInstance();
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[] {
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                }, 0);
-        }
-
         setContentView(R.layout.activity_view_restaurants);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[] {
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                }, 0);
+
+            LocationManager locationManager = (LocationManager)
+                    this.getSystemService(Context.LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(
+                    LocationManager.NETWORK_PROVIDER,
+                    0,
+                    0,
+                    locationListener
+            );
+        }
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync( this);
-
-      LocationManager locationManager = (LocationManager)
-              this.getSystemService(Context.LOCATION_SERVICE);
-      locationManager.requestLocationUpdates(
-              LocationManager.NETWORK_PROVIDER,
-              0,
-              0,
-              locationListener
-      );
     }
 
     LocationListener locationListener = new LocationListener() {
