@@ -15,6 +15,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,7 +32,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -80,6 +83,39 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync( this);
     }
+
+    private void setListeners(Dialog dialogParent) {
+        Toast.makeText(ViewRestaurantsActivity.this, restaurantName, Toast.LENGTH_LONG).show();
+        dialogParent.findViewById(R.id.btn_create_review).setOnClickListener(new View.OnClickListener() {
+            @Override
+
+            public void onClick(View v) {
+                final Dialog dialog = new Dialog(context);
+                dialog.setContentView(R.layout.review_card);
+                Button buttonDialog = dialog.findViewById(R.id.leave_review_button);
+
+                buttonDialog.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        EditText editTextComment = dialog.findViewById(R.id.review_comment);
+                        EditText editTextUsername = dialog.findViewById(R.id.editText_reviewer);
+                        RatingBar ratingBar = dialog.findViewById(R.id.review_ratingbar);
+                        Review review = new Review(ratingBar.getNumStars(),
+                                editTextComment.getText().toString(),
+                                editTextUsername.getText().toString());
+                        Toast.makeText(ViewRestaurantsActivity.this,
+                                review.getReview(), Toast.LENGTH_SHORT).show();
+
+                        review.writeReview(restaurantName);
+                        dialog.dismiss();
+                    }
+                });
+                dialog.show();
+
+            }
+        });
+    }
+
 
     LocationListener locationListener = new LocationListener() {
         public void onLocationChanged(Location location) {
@@ -157,9 +193,9 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
             public boolean onMarkerClick(Marker marker) {
                 final Dialog dialog = new Dialog(context);
                 dialog.setContentView(R.layout.custom_info_window);
-
+                setListeners(dialog);
                 String adresse = "";
-
+                restaurantName = marker.getTitle();
                 adresse +=  DecoderAdresse(marker.getPosition().latitude,marker.getPosition().longitude);
                 description = getRestaurantDescription(marker.getTitle());
 
