@@ -4,27 +4,27 @@ import java.util.Date;
 
 public class Todo {
 
-    String title;
-    String description;
+    String title_resto;
+    String description_resto;
 
     public Todo(String title, String description) {
-        this.title = title;
-        this.description = description;
+        this.title_resto = title;
+        this.description_resto = description;
     }
 
     public String getTitle() {
-        return title;
+        return title_resto;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setTitle_resto(String title) {
+        this.title_resto = title;
     }
 
     public String getDescription() {
-        return description;
+        return description_resto;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setDescription_resto(String description) {
+        this.description_resto = description;
     }
 }

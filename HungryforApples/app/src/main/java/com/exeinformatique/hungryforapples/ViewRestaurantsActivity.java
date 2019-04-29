@@ -49,7 +49,6 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
     RecyclerView.LayoutManager layoutManager;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
