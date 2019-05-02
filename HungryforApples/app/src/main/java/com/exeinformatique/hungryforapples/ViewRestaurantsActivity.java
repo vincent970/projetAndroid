@@ -3,6 +3,11 @@ package com.exeinformatique.hungryforapples;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -12,11 +17,13 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -32,7 +39,8 @@ import java.util.List;
 import java.util.Map;
 
 
-public class ViewRestaurantsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class ViewRestaurantsActivity extends FragmentActivity implements OnMapReadyCallback,
+        SensorEventListener{
     private static final String TAG = "DatabaseActivity";
     FirebaseFirestore db = null;
 
@@ -40,16 +48,18 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
     private Marker currentLocationMarker;
     private List<Marker> restaurantMarkers;
     private Map<String, Map<String,Double>> restaurantsPosition;
+    private SensorManager mSensorManager;
+    //private SensorListener mSensorListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         db = FirebaseFirestore.getInstance();
         setContentView(R.layout.activity_view_restaurants);
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[] {
-                    Manifest.permission.ACCESS_COARSE_LOCATION
+                    Manifest.permission.ACCESS_FINE_LOCATION
                 }, 0);
 
             LocationManager locationManager = (LocationManager)
@@ -65,11 +75,16 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync( this);
+        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+
     }
 
     LocationListener locationListener = new LocationListener() {
         public void onLocationChanged(Location location) {
+
             updateUserLocationOnMap(location);
+
         }
 
         public void onStatusChanged(String provider, int status, Bundle extras) {}
@@ -92,6 +107,7 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
         } else {
             currentLocationMarker.setPosition(userLocation);
         }
+        //updateCameraBearing(mSensorManager.);
     }
 
     private void getAllRestaurantsPosition() {
@@ -151,5 +167,27 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
             }
         }
         return position;
+    }
+
+
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        updateCameraBearing(sensorEvent.sensor.getResolution());
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
+    }
+
+    private void updateCameraBearing(float bearing){
+        Toast.makeText(this, "updating bearing", Toast.LENGTH_SHORT).show();
+        CameraPosition position = CameraPosition
+                .builder(
+                        mMap.getCameraPosition()
+                )
+                .bearing(bearing)
+                .build();
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(position));
     }
 }
