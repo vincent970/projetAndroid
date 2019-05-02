@@ -52,12 +52,7 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
     private Marker currentLocationMarker;
     private List<Marker> restaurantMarkers;
     private Map<String, Map<String,Double>> restaurantsPosition;
-    List<Todo> todoList = new ArrayList<>();
-
-    RecyclerView recyclerView;
-    RecyclerView.Adapter adapter;
-    RecyclerView.LayoutManager layoutManager;
-
+    WindowInfoMarker windowInfoMarker = new WindowInfoMarker();
 
 
     final Context context = this;
@@ -86,14 +81,6 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
                     0,
                     locationListener
             );
-            adapter = new CustomInfoAdapter(todoList);
-            recyclerView = findViewById(R.id.recycler_view_custom_info_marker);
-            recyclerView.setHasFixedSize(true);
-            layoutManager = new LinearLayoutManager(this);
-            recyclerView.setLayoutManager(layoutManager);
-
-
-            recyclerView.setAdapter(adapter);
         }
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -203,8 +190,8 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
                                                         .position(new LatLng(lat, lng))
                                                         .title(restaurantName)));
             }
-            Todo todoToAdd = new Todo("test", "test");
-            todoList.add(todoToAdd);
+            WindowInfoMarker windowInfoMarkerToAdd = new WindowInfoMarker("test", "test");
+            windowInfoMarkerList.add(windowInfoMarkerToAdd);
         }
 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -304,7 +291,6 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
                 });
         return heure_ouverture;
     }
-
 
     private Map<String, Double> getRestaurantPosition(QueryDocumentSnapshot document) {
         Map<String, Double> position = new HashMap<>();
