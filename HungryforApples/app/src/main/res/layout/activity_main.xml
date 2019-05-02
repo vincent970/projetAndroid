@@ -27,11 +27,4 @@
         app:layout_constraintStart_toStartOf="parent"
         />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view_custom_info_marker"
-        android:layout_width="395dp"
-        android:layout_height="292dp"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="56dp" />
-
 </android.support.constraint.ConstraintLayout>
