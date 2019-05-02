@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn_gotoViewRestaurants).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(checkPermissionCoarseLocation()==true){
+                if(checkPermissionCoarseLocation()){
                     gotoViewRestaurants();
                     WindowInfoMarker windowInfoMarkerToAdd = new WindowInfoMarker("titre", "description");
                 }
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }else{
             AskForCoarseLocationPermission();
-            return  false;
+            return false;
         }
     }
 
