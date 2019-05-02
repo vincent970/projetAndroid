@@ -10,15 +10,14 @@ import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-
 public class MainActivity extends AppCompatActivity {
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(checkPermissionCoarseLocation()==true){
                     gotoViewRestaurants();
+                    WindowInfoMarker windowInfoMarkerToAdd = new WindowInfoMarker("titre", "description");
                 }
             }
         });
