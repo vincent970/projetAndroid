@@ -101,20 +101,41 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
                     public void onClick(View v) {
                         final Spinner spinnerServices = dialog.findViewById(R.id.spinner_services);
                         final SeekBar seekBarRange = dialog.findViewById(R.id.seekBar_Range);
-
-                        final FilterTodo filterTodoToAdd = new FilterTodo(0,0,"");
-
-                        spinnerServices.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        final FilterTodo filterTodo = new FilterTodo(0,0,"");
+                        seekBarRange.setMax(100);
+                        seekBarRange.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                             @Override
-                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                filterTodoToAdd.serviceId = i;
-                                filterTodoToAdd.serviceName = spinnerServices.getSelectedItem().toString();
+                            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                                filterTodo.rangeKm = i;
+                            }
+                            @Override
+                            public void onStartTrackingTouch(SeekBar seekBar) {
+
+                            }
+                            @Override
+                            public void onStopTrackingTouch(SeekBar seekBar) {
+
                             }
                         });
                         dialog.dismiss();
+                        if (currentLocationMarker != null) {
+                            for (Marker restaurant: restaurantMarkers) {
+                                LatLng markerPos = restaurant.getPosition();
+                                LatLng currentPos = currentLocationMarker.getPosition();
 
-                        for (Marker restaurant: restaurantMarkers) {
-                            restaurant.setVisible(true);
+                                Location markerLocation = new Location("");
+                                markerLocation.setLatitude(markerPos.latitude);
+                                markerLocation.setLongitude(markerPos.longitude);
+                                Location currentLocation = new Location("");
+                                currentLocation.setLatitude(currentPos.latitude);
+                                currentLocation.setLongitude(currentPos.longitude);
+
+                                if (filterTodo.rangeKm <= currentLocation.distanceTo(markerLocation)) {
+                                    restaurant.setVisible(true);
+                                } else {
+                                    restaurant.setVisible(false);
+                                }
+                            }
                         }
                     }
                 });
