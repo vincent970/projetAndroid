@@ -1,6 +1,7 @@
 package com.exeinformatique.hungryforapples;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -11,8 +12,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -33,6 +32,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.app.Dialog;
+import android.content.Context;
+
 
 public class ViewRestaurantsActivity extends FragmentActivity implements OnMapReadyCallback {
     private static final String TAG = "DatabaseActivity";
@@ -42,7 +44,8 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
     private Marker currentLocationMarker;
     private List<Marker> restaurantMarkers;
     private Map<String, Map<String,Double>> restaurantsPosition;
-    WindowInfoMarker windowInfoMarker = new WindowInfoMarker();
+
+    final Context context = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,10 +142,27 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
                                                         .position(new LatLng(lat, lng))
                                                         .title(restaurantName)));
             }
-            WindowInfoMarker windowInfoMarkerToAdd = new WindowInfoMarker("test", "test");
-            windowInfoMarkerList.add(windowInfoMarkerToAdd);
         }
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                final Dialog dialog = new Dialog(context);
+                dialog.setContentView(R.layout.custom_info_window);
+                dialog.show();
+                return false;
+            }
+        });
+
     }
+
+   /* private void generateInfoWindow() {
+        for ( Marker marker : restaurantMarkers)
+        {
+
+        }
+
+    }*/
 
     private Map<String, Double> getRestaurantPosition(QueryDocumentSnapshot document) {
         Map<String, Double> position = new HashMap<>();
