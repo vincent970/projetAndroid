@@ -1,9 +1,16 @@
 package com.exeinformatique.hungryforapples;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class Review {
     int starRating;
     String comment;
     String username;
+
+    FirebaseFirestore db = null;
 
     public Review(int starRating, String comment, String username) {
         this.starRating = starRating;
@@ -39,4 +46,17 @@ public class Review {
         return this.starRating + " stars, " + this.comment + " -" + this.username;
     }
 
+    public void writeReview(){
+        Map<String, Object> data = new HashMap<>();
+        data.put("Rating", this.starRating);
+        data.put("Comment", this.comment);
+        data.put("Username", this.username);
+
+        db = FirebaseFirestore.getInstance();
+        db.collection("Restaurants").document(
+                "WiG3teUIinsq6BwSWO31")
+                .collection("Reviews")
+                .document()
+                .set(data);
+    }
 }
