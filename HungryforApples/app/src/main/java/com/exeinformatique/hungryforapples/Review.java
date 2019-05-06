@@ -34,4 +34,9 @@ public class Review {
     public void setUsername(String username) {
         this.username = username;
     }
+
+    public String getReview(){
+        return this.starRating + " stars, " + this.comment + " -" + this.username;
+    }
+
 }
