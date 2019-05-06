@@ -17,7 +17,10 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.TextView;
 import android.view.View;
-import android.widget.Toast;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.SeekBar;
+import android.widget.Spinner;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -41,6 +44,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public class ViewRestaurantsActivity extends FragmentActivity implements OnMapReadyCallback {
+    final Context context = this;
     private static final String TAG = "DatabaseActivity";
     FirebaseFirestore db = null;
 
@@ -62,7 +66,7 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
         db = FirebaseFirestore.getInstance();
         setContentView(R.layout.activity_view_restaurants);
         setListeners();
-        
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[] {
@@ -88,7 +92,33 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
         findViewById(R.id.btn_filter).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(ViewRestaurantsActivity.this, "\uD83C\uDF5E", Toast.LENGTH_LONG).show();
+                final Dialog dialog = new Dialog(context);
+                dialog.setContentView(R.layout.filter_dialog);
+                Button dialogButtonAdd = dialog.findViewById(R.id.btn_addTodo);
+
+                dialogButtonAdd.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final Spinner spinnerServices = dialog.findViewById(R.id.spinner_services);
+                        final SeekBar seekBarRange = dialog.findViewById(R.id.seekBar_Range);
+
+                        final FilterTodo filterTodoToAdd = new FilterTodo(0,0,"");
+
+                        spinnerServices.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                filterTodoToAdd.serviceId = i;
+                                filterTodoToAdd.serviceName = spinnerServices.getSelectedItem().toString();
+                            }
+                        });
+                        dialog.dismiss();
+
+                        for (Marker restaurant: restaurantMarkers) {
+                            restaurant.setVisible(true);
+                        }
+                    }
+                });
+                dialog.show();
             }
         });
     }
