@@ -14,8 +14,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -44,6 +42,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import android.app.Dialog;
+import android.content.Context;
+
+
 public class ViewRestaurantsActivity extends FragmentActivity implements OnMapReadyCallback {
     private static final String TAG = "DatabaseActivity";
     FirebaseFirestore db = null;
@@ -52,7 +54,6 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
     private Marker currentLocationMarker;
     private List<Marker> restaurantMarkers;
     private Map<String, Map<String,Double>> restaurantsPosition;
-    WindowInfoMarker windowInfoMarker = new WindowInfoMarker();
 
 
     final Context context = this;
@@ -190,8 +191,6 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
                                                         .position(new LatLng(lat, lng))
                                                         .title(restaurantName)));
             }
-            WindowInfoMarker windowInfoMarkerToAdd = new WindowInfoMarker("test", "test");
-            windowInfoMarkerList.add(windowInfoMarkerToAdd);
         }
 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
