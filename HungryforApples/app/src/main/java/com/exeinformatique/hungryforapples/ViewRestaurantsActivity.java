@@ -158,7 +158,7 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
                 {
                     if (marker.getTitle() == currentmarker.getTitle())
                     {
-                        Query queryTitre db.collection("Restaurants").whereEqualTo("Titre", currentmarker.getTitle());
+                        Query queryTitre = db.collection("Restaurants").whereEqualTo("Titre", currentmarker.getTitle());
                         DecoderAdresse(location.get("Latitude"),location.get("Longitude"));
                     }
                 }
