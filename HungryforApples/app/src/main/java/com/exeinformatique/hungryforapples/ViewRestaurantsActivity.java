@@ -4,6 +4,8 @@ import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -23,18 +25,17 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
-
-import android.app.Dialog;
-import android.content.Context;
-
 
 public class ViewRestaurantsActivity extends FragmentActivity implements OnMapReadyCallback {
     private static final String TAG = "DatabaseActivity";
@@ -46,6 +47,9 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
     private Map<String, Map<String,Double>> restaurantsPosition;
 
     final Context context = this;
+
+    Map<String,Double> location;
+    String restaurantName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,8 +135,8 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
     private void generateMarkers() {
         restaurantMarkers = new ArrayList<>();
         for (Map.Entry<String, Map<String,Double>> restaurant: restaurantsPosition.entrySet()) {
-            String restaurantName = restaurant.getKey();
-            Map<String,Double> location = restaurant.getValue();
+             restaurantName  = restaurant.getKey();
+              location = restaurant.getValue();
             Double lat = location.get("Latitude");
             Double lng = location.get("Longitude");
             if (lat != null && lng != null) {
@@ -150,19 +154,32 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
                 final Dialog dialog = new Dialog(context);
                 dialog.setContentView(R.layout.custom_info_window);
                 dialog.show();
+                for (Marker currentmarker : restaurantMarkers)
+                {
+                    if (marker.getTitle() == currentmarker.getTitle())
+                    {
+                        Query queryTitre db.collection("Restaurants").whereEqualTo("Titre", currentmarker.getTitle());
+                        DecoderAdresse(location.get("Latitude"),location.get("Longitude"));
+                    }
+                }
                 return false;
             }
         });
-
     }
 
-   /* private void generateInfoWindow() {
-        for ( Marker marker : restaurantMarkers)
-        {
+    private String DecoderAdresse(Double latitude, Double longitude)
+    {
+        Geocoder geocoder;
+        List<Address> addresses;
+        geocoder = new Geocoder(this, Locale.getDefault());
 
-        }
+        addresses = geocoder.getFromLocation(latitude, longitude, 1);
 
-    }*/
+        String address = addresses.get(0).getAddressLine(0);
+        String postalCode = addresses.get(0).getPostalCode();
+
+        return address + postalCode;
+    }
 
     private Map<String, Double> getRestaurantPosition(QueryDocumentSnapshot document) {
         Map<String, Double> position = new HashMap<>();
