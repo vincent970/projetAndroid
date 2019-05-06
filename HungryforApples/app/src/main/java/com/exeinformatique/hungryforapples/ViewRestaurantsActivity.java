@@ -19,8 +19,10 @@ import android.widget.TextView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -53,6 +55,7 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
     private Marker currentLocationMarker;
     private List<Marker> restaurantMarkers;
     private Map<String, Map<String,Double>> restaurantsPosition;
+    private FilterTodo filterTodo;
 
     final Context context = this;
 
@@ -68,10 +71,10 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
         setContentView(R.layout.activity_view_restaurants);
         setListeners();
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[] {
-                    Manifest.permission.ACCESS_COARSE_LOCATION
+                    Manifest.permission.ACCESS_FINE_LOCATION
                 }, 0);
 
             LocationManager locationManager = (LocationManager)
@@ -96,29 +99,29 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
                 final Dialog dialog = new Dialog(context);
                 dialog.setContentView(R.layout.filter_dialog);
                 Button dialogButtonAdd = dialog.findViewById(R.id.btn_addTodo);
+                final SeekBar seekBarRange = dialog.findViewById(R.id.seekBar_Range);
+                seekBarRange.setMax(25);
+                seekBarRange.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                        final TextView rangeText = dialog.findViewById(R.id.textView_Range);
+                        rangeText.setText("Distance Maximale ("
+                                + String.valueOf(seekBarRange.getProgress()) + " Km)");
+                    }
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {}
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {}
+                });
 
                 dialogButtonAdd.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        dialog.dismiss();
                         final Spinner spinnerServices = dialog.findViewById(R.id.spinner_services);
                         final SeekBar seekBarRange = dialog.findViewById(R.id.seekBar_Range);
-                        final FilterTodo filterTodo = new FilterTodo(0,0,"");
-                        seekBarRange.setMax(100);
-                        seekBarRange.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                            @Override
-                            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                                filterTodo.rangeKm = i;
-                            }
-                            @Override
-                            public void onStartTrackingTouch(SeekBar seekBar) {
-
-                            }
-                            @Override
-                            public void onStopTrackingTouch(SeekBar seekBar) {
-
-                            }
-                        });
-                        dialog.dismiss();
+                        filterTodo = new FilterTodo(0,0,"");
+                        filterTodo.rangeKm = seekBarRange.getProgress();
                         if (currentLocationMarker != null) {
                             for (Marker restaurant: restaurantMarkers) {
                                 LatLng markerPos = restaurant.getPosition();
@@ -131,9 +134,8 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
                                 currentLocation.setLatitude(currentPos.latitude);
                                 currentLocation.setLongitude(currentPos.longitude);
 
-                                test(currentLocation, markerLocation);
-
-                                if (filterTodo.rangeKm <= currentLocation.distanceTo(markerLocation)) {
+                                if ((filterTodo.rangeKm * 1000 >= currentLocation.distanceTo(markerLocation))
+                                        || filterTodo.rangeKm == 0) {
                                     restaurant.setVisible(true);
                                 } else {
                                     restaurant.setVisible(false);
@@ -145,11 +147,6 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
                 dialog.show();
             }
         });
-    }
-
-    private void test(Location currentLocation, Location markerLocation){
-        float dist = currentLocation.distanceTo(markerLocation);
-        Toast.makeText(context, Float.toString(dist), Toast.LENGTH_SHORT).show();
     }
 
     LocationListener locationListener = new LocationListener() {

@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean checkPermissionCoarseLocation(){
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             return true;
         }else{
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void AskForCoarseLocationPermission(){
             ActivityCompat.requestPermissions(this, new String[] {
-                    Manifest.permission.ACCESS_COARSE_LOCATION
+                    Manifest.permission.ACCESS_FINE_LOCATION
             }, 0);
     }
 }
