@@ -21,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -130,6 +131,8 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
                                 currentLocation.setLatitude(currentPos.latitude);
                                 currentLocation.setLongitude(currentPos.longitude);
 
+                                test(currentLocation, markerLocation);
+
                                 if (filterTodo.rangeKm <= currentLocation.distanceTo(markerLocation)) {
                                     restaurant.setVisible(true);
                                 } else {
@@ -142,6 +145,11 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
                 dialog.show();
             }
         });
+    }
+
+    private void test(Location currentLocation, Location markerLocation){
+        float dist = currentLocation.distanceTo(markerLocation);
+        Toast.makeText(context, Float.toString(dist), Toast.LENGTH_SHORT).show();
     }
 
     LocationListener locationListener = new LocationListener() {
