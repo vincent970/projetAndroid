@@ -17,9 +17,9 @@ public class CustomInfoAdapter {
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            titre = itemView.findViewById(R.id.textView_Titre);
-            description = itemView.findViewById(R.id.textView_heureOuverture);
-            heureOuverture = itemView.findViewById(R.id.textView_heureOuverture);
+            titre = itemView.findViewById(R.id.textView_titre);
+            description = itemView.findViewById(R.id.textView_description);
+            heureOuverture = itemView.findViewById(R.id.textView_heure_ouverture);
             adresse = itemView.findViewById(R.id.textView_adresse);
         }
     }
