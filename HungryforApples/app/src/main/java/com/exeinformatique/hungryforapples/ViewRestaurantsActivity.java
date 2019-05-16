@@ -31,7 +31,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -213,14 +212,6 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
                 textHeureOuverture.setText(getRestaurantHeureOuverture(marker.getTitle()));
 
                 dialog.show();
-                for (Marker currentmarker : restaurantMarkers)
-                {
-                    if (marker.getTitle() == currentmarker.getTitle())
-                    {
-                        Query queryTitre = db.collection("Restaurants").whereEqualTo("Titre", currentmarker.getTitle());
-                        DecoderAdresse(location.get("Latitude"),location.get("Longitude"));
-                    }
-                }
                 return false;
             }
         });
