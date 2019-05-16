@@ -15,6 +15,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -25,12 +27,12 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,6 +52,8 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
 
     Map<String,Double> location;
     String restaurantName;
+    String description;
+    String heure_ouverture;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,7 +140,7 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
         restaurantMarkers = new ArrayList<>();
         for (Map.Entry<String, Map<String,Double>> restaurant: restaurantsPosition.entrySet()) {
              restaurantName  = restaurant.getKey();
-              location = restaurant.getValue();
+             location = restaurant.getValue();
             Double lat = location.get("Latitude");
             Double lng = location.get("Longitude");
             if (lat != null && lng != null) {
@@ -153,15 +157,24 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
             public boolean onMarkerClick(Marker marker) {
                 final Dialog dialog = new Dialog(context);
                 dialog.setContentView(R.layout.custom_info_window);
+
+                String adresse = "";
+                String descriptionRestaurant = "";
+
+                adresse +=  DecoderAdresse(marker.getPosition().latitude,marker.getPosition().longitude);
+                descriptionRestaurant = getRestaurantDescription(marker.getTitle());
+
+                TextView textTitre = dialog.findViewById(R.id.textView_titre);
+                TextView textDescription = dialog.findViewById(R.id.textView_description);
+                TextView textAdresse = dialog.findViewById(R.id.textView_adresse);
+                TextView textHeureOuverture = dialog.findViewById(R.id.textView_heure_ouverture);
+
+                textTitre.setText(marker.getTitle());
+                textDescription.setText(descriptionRestaurant);
+                textAdresse.setText(adresse);
+                textHeureOuverture.setText(getRestaurantHeure_Ouverture(marker.getTitle()));
+
                 dialog.show();
-                for (Marker currentmarker : restaurantMarkers)
-                {
-                    if (marker.getTitle() == currentmarker.getTitle())
-                    {
-                        Query queryTitre = db.collection("Restaurants").whereEqualTo("Titre", currentmarker.getTitle());
-                        DecoderAdresse(location.get("Latitude"),location.get("Longitude"));
-                    }
-                }
                 return false;
             }
         });
@@ -173,12 +186,66 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
         List<Address> addresses;
         geocoder = new Geocoder(this, Locale.getDefault());
 
-        addresses = geocoder.getFromLocation(latitude, longitude, 1);
+       try
+       {
+           addresses = geocoder.getFromLocation(latitude, longitude, 1);
 
-        String address = addresses.get(0).getAddressLine(0);
-        String postalCode = addresses.get(0).getPostalCode();
+           String address = addresses.get(0).getAddressLine(0);
 
-        return address + postalCode;
+           return address;
+       }
+
+       catch(IOException e)
+        {
+            Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
+        }
+        return null;
+    }
+
+    private String getRestaurantDescription(final String restaurantName)
+    {
+        db.collection("Restaurants")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String name = document.getString("Name");
+                              //  Toast.makeText(context,restaurantName, Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(context,restaurantName, Toast.LENGTH_SHORT).show();
+                                if (name == restaurantName) {
+                                    Toast.makeText(context,"bitch", Toast.LENGTH_LONG).show();
+                                    //description = document.getString("Type");
+
+                                }
+                            }
+                            generateMarkers();
+                        } else Log.d(TAG, "Error getting documents: ", task.getException());
+                    }
+                });
+        return description;
+    }
+
+    private String getRestaurantHeure_Ouverture(final String restaurantName)
+    {
+        db.collection("Restaurants")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String name = document.getString("Name");
+                                if (name == restaurantName) {
+                                    heure_ouverture = document.getString("Ouverture");
+                                }
+                            }
+                            generateMarkers();
+                        } else Log.d(TAG, "Error getting documents: ", task.getException());
+                    }
+                });
+        return description;
     }
 
     private Map<String, Double> getRestaurantPosition(QueryDocumentSnapshot document) {
