@@ -16,6 +16,13 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.TextView;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.SeekBar;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -40,6 +47,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public class ViewRestaurantsActivity extends FragmentActivity implements OnMapReadyCallback {
+    final Context context = this;
     private static final String TAG = "DatabaseActivity";
     FirebaseFirestore db = null;
 
@@ -47,8 +55,7 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
     private Marker currentLocationMarker;
     private List<Marker> restaurantMarkers;
     private Map<String, Map<String,Double>> restaurantsPosition;
-
-    final Context context = this;
+    private FilterTodo filterTodo;
 
     Map<String,Double> location;
     String restaurantName;
@@ -60,10 +67,12 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
         super.onCreate(savedInstanceState);
         db = FirebaseFirestore.getInstance();
         setContentView(R.layout.activity_view_restaurants);
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+        setListeners();
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[] {
-                    Manifest.permission.ACCESS_COARSE_LOCATION
+                    Manifest.permission.ACCESS_FINE_LOCATION
                 }, 0);
 
             LocationManager locationManager = (LocationManager)
@@ -79,6 +88,63 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync( this);
+    }
+    
+    private void setListeners(){
+        findViewById(R.id.btn_filter).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Dialog dialog = new Dialog(context);
+                dialog.setContentView(R.layout.filter_dialog);
+                Button dialogButtonAdd = dialog.findViewById(R.id.btn_addTodo);
+                final SeekBar seekBarRange = dialog.findViewById(R.id.seekBar_Range);
+                seekBarRange.setMax(25);
+                seekBarRange.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                        final TextView rangeText = dialog.findViewById(R.id.textView_Range);
+                        rangeText.setText("Distance Maximale ("
+                                + String.valueOf(seekBarRange.getProgress()) + " Km)");
+                    }
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {}
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {}
+                });
+
+                dialogButtonAdd.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        final Spinner spinnerServices = dialog.findViewById(R.id.spinner_services);
+                        final SeekBar seekBarRange = dialog.findViewById(R.id.seekBar_Range);
+                        filterTodo = new FilterTodo(0,0,"");
+                        filterTodo.rangeKm = seekBarRange.getProgress();
+                        if (currentLocationMarker != null) {
+                            for (Marker restaurant: restaurantMarkers) {
+                                LatLng markerPos = restaurant.getPosition();
+                                LatLng currentPos = currentLocationMarker.getPosition();
+
+                                Location markerLocation = new Location("");
+                                markerLocation.setLatitude(markerPos.latitude);
+                                markerLocation.setLongitude(markerPos.longitude);
+                                Location currentLocation = new Location("");
+                                currentLocation.setLatitude(currentPos.latitude);
+                                currentLocation.setLongitude(currentPos.longitude);
+
+                                if ((filterTodo.rangeKm * 1000 >= currentLocation.distanceTo(markerLocation))
+                                        || filterTodo.rangeKm == 0) {
+                                    restaurant.setVisible(true);
+                                } else {
+                                    restaurant.setVisible(false);
+                                }
+                            }
+                        }
+                    }
+                });
+                dialog.show();
+            }
+        });
     }
 
     LocationListener locationListener = new LocationListener() {
