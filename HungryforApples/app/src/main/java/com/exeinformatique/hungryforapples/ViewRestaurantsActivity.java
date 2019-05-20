@@ -57,8 +57,6 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
     private Map<String, Map<String,Double>> restaurantsPosition;
     private FilterTodo filterTodo;
 
-    final Context context = this;
-
     Map<String,Double> location;
     String restaurantName;
     String description;
