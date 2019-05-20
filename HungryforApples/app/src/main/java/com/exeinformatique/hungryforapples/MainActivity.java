@@ -35,13 +35,11 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn_gotoViewRestaurants).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(checkPermissionCoarseLocation()){
+                if(checkPermissionCoarseLocation())
                     gotoViewRestaurants();
                     WindowInfoMarker windowInfoMarkerToAdd = new WindowInfoMarker("titre", "description");
-                }
             }
         });
-
         findViewById(R.id.btn_create_review).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,17 +68,18 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean checkPermissionCoarseLocation(){
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
+                == PackageManager.PERMISSION_GRANTED)
+        {
             return true;
-        }else{
+        } else {
             AskForCoarseLocationPermission();
             return false;
         }
     }
 
     private void AskForCoarseLocationPermission(){
-            ActivityCompat.requestPermissions(this, new String[] {
-                    Manifest.permission.ACCESS_FINE_LOCATION
-            }, 0);
+        ActivityCompat.requestPermissions(this, new String[] {
+                Manifest.permission.ACCESS_FINE_LOCATION
+        }, 0);
     }
 }

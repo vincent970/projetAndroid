@@ -21,10 +21,10 @@
         android:id="@+id/btn_addTodo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="Ajouter Todo"
+        android:layout_marginEnd="8dp"
+        android:text="Appliquer le filtre"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/seekBar_Range" />
