@@ -75,7 +75,7 @@ public class Review {
                     }
                 });
 
-        if (this.documentCode != "") {
+        /*if (this.documentCode != "") {
             Map<String, Object> data = new HashMap<>();
             data.put("Rating", this.starRating);
             data.put("Comment", this.comment);
@@ -84,7 +84,7 @@ public class Review {
                     .collection("Reviews")
                     .document()
                     .set(data);
-        }
+        }*/
 
         Toast.makeText(context, getReview(), Toast.LENGTH_LONG).show();
     }

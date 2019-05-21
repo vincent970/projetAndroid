@@ -72,7 +72,7 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
         super.onCreate(savedInstanceState);
         db = FirebaseFirestore.getInstance();
         setContentView(R.layout.activity_view_restaurants);
-        setListeners();
+
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -97,6 +97,7 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
 
 
     private void setListeners(Dialog dialogParent) {
+
         dialogParent.findViewById(R.id.btn_create_review).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -207,7 +208,7 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
             public boolean onMarkerClick(Marker marker) {
                 final Dialog dialog = new Dialog(context);
                 dialog.setContentView(R.layout.custom_info_window);
-
+                setListeners(dialog);
                 String adresse = "";
 
                 adresse +=  DecoderAdresse(marker.getPosition().latitude,marker.getPosition().longitude);
