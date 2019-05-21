@@ -8,6 +8,8 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +18,7 @@ public class Review {
     float starRating;
     String comment;
     String username;
-
+    String documentCode;
     FirebaseFirestore db = null;
 
     public Review(float starRating, String comment, String username) {
@@ -72,7 +74,7 @@ public class Review {
                         };
                     }
                 });
-        /*
+
         if (this.documentCode != "") {
             Map<String, Object> data = new HashMap<>();
             data.put("Rating", this.starRating);
@@ -83,7 +85,7 @@ public class Review {
                     .document()
                     .set(data);
         }
-        */
+
         Toast.makeText(context, getReview(), Toast.LENGTH_LONG).show();
     }
 }
