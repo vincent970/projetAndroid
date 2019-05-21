@@ -102,13 +102,14 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
                         EditText editTextComment = dialog.findViewById(R.id.review_comment);
                         EditText editTextUsername = dialog.findViewById(R.id.editText_reviewer);
                         RatingBar ratingBar = dialog.findViewById(R.id.review_ratingbar);
-                        Review review = new Review(ratingBar.getNumStars(),
+                        Review review = new Review(ratingBar.getRating(),
                                 editTextComment.getText().toString(),
                                 editTextUsername.getText().toString());
                         Toast.makeText(ViewRestaurantsActivity.this,
                                 review.getReview(), Toast.LENGTH_SHORT).show();
 
                         review.writeReview(restaurantName);
+                        Toast.makeText(context, review.getReview(), Toast.LENGTH_SHORT).show();
                         dialog.dismiss();
                     }
                 });

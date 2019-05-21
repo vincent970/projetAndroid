@@ -41,27 +41,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
-        findViewById(R.id.btn_create_review).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final Dialog dialog = new Dialog(context);
-                dialog.setContentView(R.layout.review_card);
-                Button buttonDialog = dialog.findViewById(R.id.leave_review_button);
-
-                buttonDialog.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        EditText editTextComment = dialog.findViewById(R.id.review_comment);
-                        RatingBar ratingBar = dialog.findViewById(R.id.review_ratingbar);
-                        Review review = new Review(ratingBar.getNumStars(),editTextComment.getText().toString(), "noobMaser69");
-                        Toast.makeText(MainActivity.this, review.getReview(), Toast.LENGTH_SHORT).show();
-                        dialog.dismiss();
-                    }
-                });
-                dialog.show();
-            }
-        });
     }
 
     private void gotoViewRestaurants(){

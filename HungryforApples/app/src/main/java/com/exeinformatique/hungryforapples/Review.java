@@ -2,6 +2,7 @@ package com.exeinformatique.hungryforapples;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -13,20 +14,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Review {
-    int starRating;
+    float starRating;
     String comment;
     String username;
     String documentCode;
 
     FirebaseFirestore db = null;
 
-    public Review(int starRating, String comment, String username) {
+    public Review(float starRating, String comment, String username) {
         this.starRating = starRating;
         this.comment = comment;
         this.username = username;
     }
 
-    public int getStarRating() {
+    public float getStarRating() {
         return starRating;
     }
 
@@ -74,7 +75,7 @@ public class Review {
                     }
                 });
 
-        if (this.documentCode != "") {
+       /* if (this.documentCode != "") {
             Map<String, Object> data = new HashMap<>();
             data.put("Rating", this.starRating);
             data.put("Comment", this.comment);
@@ -83,7 +84,8 @@ public class Review {
                     .collection("Reviews")
                     .document()
                     .set(data);
-        }
+        }*/
+
 
     }
 }
