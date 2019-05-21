@@ -23,6 +23,11 @@ import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RatingBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -89,63 +94,42 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync( this);
     }
-    
-    private void setListeners(){
-        findViewById(R.id.btn_filter).setOnClickListener(new View.OnClickListener() {
+
+
+    private void setListeners(Dialog dialogParent) {
+        dialogParent.findViewById(R.id.btn_create_review).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 final Dialog dialog = new Dialog(context);
-                dialog.setContentView(R.layout.filter_dialog);
-                Button dialogButtonAdd = dialog.findViewById(R.id.btn_addTodo);
-                final SeekBar seekBarRange = dialog.findViewById(R.id.seekBar_Range);
-                seekBarRange.setMax(25);
-                seekBarRange.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                    @Override
-                    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                        final TextView rangeText = dialog.findViewById(R.id.textView_Range);
-                        rangeText.setText("Distance Maximale ("
-                                + String.valueOf(seekBarRange.getProgress()) + " Km)");
-                    }
-                    @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {}
-                    @Override
-                    public void onStopTrackingTouch(SeekBar seekBar) {}
-                });
-
-                dialogButtonAdd.setOnClickListener(new View.OnClickListener() {
+                dialog.setContentView(R.layout.review_card);
+                Button buttonDialog = dialog.findViewById(R.id.leave_review_button);
+                final EditText editTextComment = dialog.findViewById(R.id.review_comment);
+                final EditText editTextUsername = dialog.findViewById(R.id.editText_reviewer);
+                final RatingBar ratingBar = dialog.findViewById(R.id.review_ratingbar);
+                buttonDialog.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
+                        Review review = new Review(ratingBar.getRating(),
+                                editTextComment.getText().toString(),
+                                editTextUsername.getText().toString());
+                        Toast.makeText(ViewRestaurantsActivity.this,
+                                review.getReview(), Toast.LENGTH_SHORT).show();
+
+                        review.writeReview(restaurantName, context);
                         dialog.dismiss();
-                        final Spinner spinnerServices = dialog.findViewById(R.id.spinner_services);
-                        final SeekBar seekBarRange = dialog.findViewById(R.id.seekBar_Range);
-                        filterTodo = new FilterTodo(0,0,"");
-                        filterTodo.rangeKm = seekBarRange.getProgress();
-                        if (currentLocationMarker != null) {
-                            for (Marker restaurant: restaurantMarkers) {
-                                LatLng markerPos = restaurant.getPosition();
-                                LatLng currentPos = currentLocationMarker.getPosition();
-
-                                Location markerLocation = new Location("");
-                                markerLocation.setLatitude(markerPos.latitude);
-                                markerLocation.setLongitude(markerPos.longitude);
-                                Location currentLocation = new Location("");
-                                currentLocation.setLatitude(currentPos.latitude);
-                                currentLocation.setLongitude(currentPos.longitude);
-
-                                if ((filterTodo.rangeKm * 1000 >= currentLocation.distanceTo(markerLocation))
-                                        || filterTodo.rangeKm == 0) {
-                                    restaurant.setVisible(true);
-                                } else {
-                                    restaurant.setVisible(false);
-                                }
-                            }
-                        }
                     }
                 });
                 dialog.show();
             }
         });
     }
+
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
+    };
 
     LocationListener locationListener = new LocationListener() {
         public void onLocationChanged(Location location) {
