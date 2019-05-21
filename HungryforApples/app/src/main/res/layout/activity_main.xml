@@ -21,12 +21,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/btn_create_review"
-        android:layout_width="196dp"
-        android:layout_height="52dp"
-        android:text="meme *clap* review *clap*"
-        tools:layout_editor_absoluteX="85dp"
-        tools:layout_editor_absoluteY="257dp" />
 
 </android.support.constraint.ConstraintLayout>
