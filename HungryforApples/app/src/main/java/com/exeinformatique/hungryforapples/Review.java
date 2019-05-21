@@ -1,5 +1,6 @@
 package com.exeinformatique.hungryforapples;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
@@ -18,7 +19,6 @@ public class Review {
     String comment;
     String username;
     String documentCode;
-
     FirebaseFirestore db = null;
 
     public Review(float starRating, String comment, String username) {
@@ -55,7 +55,7 @@ public class Review {
         return this.starRating + " stars, " + this.comment + " -" + this.username;
     }
 
-    public void writeReview(final String restaurantName){
+    public void writeReview(final String restaurantName, Context context){
 
         db = FirebaseFirestore.getInstance();
 
@@ -75,7 +75,7 @@ public class Review {
                     }
                 });
 
-       /* if (this.documentCode != "") {
+        if (this.documentCode != "") {
             Map<String, Object> data = new HashMap<>();
             data.put("Rating", this.starRating);
             data.put("Comment", this.comment);
@@ -84,8 +84,8 @@ public class Review {
                     .collection("Reviews")
                     .document()
                     .set(data);
-        }*/
+        }
 
-
+        Toast.makeText(context, getReview(), Toast.LENGTH_LONG).show();
     }
 }

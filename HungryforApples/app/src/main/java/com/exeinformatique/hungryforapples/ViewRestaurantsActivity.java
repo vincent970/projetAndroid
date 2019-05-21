@@ -15,6 +15,14 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.widget.TextView;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.SeekBar;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -44,6 +52,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public class ViewRestaurantsActivity extends FragmentActivity implements OnMapReadyCallback {
+    final Context context = this;
     private static final String TAG = "DatabaseActivity";
     FirebaseFirestore db = null;
 
@@ -51,9 +60,7 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
     private Marker currentLocationMarker;
     private List<Marker> restaurantMarkers;
     private Map<String, Map<String,Double>> restaurantsPosition;
-
-
-    final Context context = this;
+    private FilterTodo filterTodo;
 
     Map<String,Double> location;
     String restaurantName;
@@ -65,10 +72,12 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
         super.onCreate(savedInstanceState);
         db = FirebaseFirestore.getInstance();
         setContentView(R.layout.activity_view_restaurants);
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+        setListeners();
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[] {
-                    Manifest.permission.ACCESS_COARSE_LOCATION
+                    Manifest.permission.ACCESS_FINE_LOCATION
                 }, 0);
 
             LocationManager locationManager = (LocationManager)
@@ -86,39 +95,41 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
         mapFragment.getMapAsync( this);
     }
 
+
     private void setListeners(Dialog dialogParent) {
-        Toast.makeText(ViewRestaurantsActivity.this, restaurantName, Toast.LENGTH_LONG).show();
         dialogParent.findViewById(R.id.btn_create_review).setOnClickListener(new View.OnClickListener() {
             @Override
-
-            public void onClick(View v) {
+            public void onClick(View view) {
                 final Dialog dialog = new Dialog(context);
                 dialog.setContentView(R.layout.review_card);
                 Button buttonDialog = dialog.findViewById(R.id.leave_review_button);
-
+                final EditText editTextComment = dialog.findViewById(R.id.review_comment);
+                final EditText editTextUsername = dialog.findViewById(R.id.editText_reviewer);
+                final RatingBar ratingBar = dialog.findViewById(R.id.review_ratingbar);
                 buttonDialog.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        EditText editTextComment = dialog.findViewById(R.id.review_comment);
-                        EditText editTextUsername = dialog.findViewById(R.id.editText_reviewer);
-                        RatingBar ratingBar = dialog.findViewById(R.id.review_ratingbar);
+
                         Review review = new Review(ratingBar.getRating(),
                                 editTextComment.getText().toString(),
                                 editTextUsername.getText().toString());
                         Toast.makeText(ViewRestaurantsActivity.this,
                                 review.getReview(), Toast.LENGTH_SHORT).show();
 
-                        review.writeReview(restaurantName);
-                        Toast.makeText(context, review.getReview(), Toast.LENGTH_SHORT).show();
+                        review.writeReview(restaurantName, context);
                         dialog.dismiss();
                     }
                 });
                 dialog.show();
-
             }
         });
     }
 
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
+    };
 
     LocationListener locationListener = new LocationListener() {
         public void onLocationChanged(Location location) {
@@ -196,9 +207,9 @@ public class ViewRestaurantsActivity extends FragmentActivity implements OnMapRe
             public boolean onMarkerClick(Marker marker) {
                 final Dialog dialog = new Dialog(context);
                 dialog.setContentView(R.layout.custom_info_window);
-                setListeners(dialog);
+
                 String adresse = "";
-                restaurantName = marker.getTitle();
+
                 adresse +=  DecoderAdresse(marker.getPosition().latitude,marker.getPosition().longitude);
                 description = getRestaurantDescription(marker.getTitle());
 
